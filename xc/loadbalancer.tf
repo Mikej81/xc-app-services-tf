@@ -98,7 +98,7 @@ resource "volterra_http_loadbalancer" "example" {
       route_redirect {
         proto_redirect    = "incoming-proto"
         host_redirect     = "dummy.f5-sa.myedgedemo.com"
-        path_redirect     = "/fr/"
+        path_redirect     = "/pt/"
         response_code     = "301"
         retain_all_params = true
         port_redirect     = 0
@@ -184,6 +184,22 @@ resource "volterra_http_loadbalancer" "example" {
       http_method = "ANY"
       path {
         prefix = "/fr/"
+      }
+      origin_pools {
+        pool {
+          namespace = var.namespace
+          name      = volterra_origin_pool.crunchy.name
+        }
+        weight   = 1
+        priority = 1
+      }
+    }
+  }
+  routes {
+    simple_route {
+      http_method = "ANY"
+      path {
+        prefix = "/pt/"
       }
       origin_pools {
         pool {
