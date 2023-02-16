@@ -71,7 +71,7 @@ resource "volterra_http_loadbalancer" "example" {
       }
       headers {
         name         = "Accept-Language"
-        regex        = "([fF][rR]-[fF][rR].*$)"
+        regex        = "(.*[fF][rR]-[fF][rR].*$)"
         invert_match = false
       }
       route_redirect {
@@ -92,7 +92,28 @@ resource "volterra_http_loadbalancer" "example" {
       }
       headers {
         name         = "Accept-Language"
-        regex        = "([eE][sS]-[0-9].*$)"
+        regex        = "(.*[pP][tT]-[bB][rR].*)"
+        invert_match = false
+      }
+      route_redirect {
+        proto_redirect    = "incoming-proto"
+        host_redirect     = "dummy.f5-sa.myedgedemo.com"
+        path_redirect     = "/fr/"
+        response_code     = "301"
+        retain_all_params = true
+        port_redirect     = 0
+      }
+    }
+  }
+  routes {
+    redirect_route {
+      http_method = "ANY"
+      path {
+        path = "/"
+      }
+      headers {
+        name         = "Accept-Language"
+        regex        = "(.*[eE][sS]-[0-9].*$)"
         invert_match = false
       }
       route_redirect {
@@ -145,7 +166,7 @@ resource "volterra_http_loadbalancer" "example" {
       }
       headers {
         name         = "Accept-Language"
-        regex        = "([eE][nN]-[uU][sS].*$)"
+        regex        = "(.*[eE][nN]-[uU][sS].*$)"
         invert_match = false
       }
       route_redirect {
