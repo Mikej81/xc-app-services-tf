@@ -1,6 +1,6 @@
 
-resource "volterra_origin_pool" "crunchy" {
-  name      = "tforigin"
+resource "volterra_origin_pool" "origin" {
+  name      = "${var.name}-origin"
   namespace = var.namespace
 
   endpoint_selection     = "LOCAL_PREFERRED"
@@ -29,39 +29,104 @@ resource "volterra_origin_pool" "crunchy" {
 }
 
 resource "volterra_http_loadbalancer" "example" {
-  name      = "crunchy-web"
+  name      = "${var.name}-http-lb"
   namespace = var.namespace
 
   advertise_on_public_default_vip = true
   disable_api_definition          = true
-  disable_api_discovery           = true
   no_challenge                    = true
   disable_ddos_detection          = true
 
-  domains = ["crunch.${var.delegated_dns_domain}"]
+  domains = ["${var.name}.${var.delegated_dns_domain}"]
 
   round_robin = true
-
-  // One of the arguments from this list "https_auto_cert https http" must be set
 
   http {
     dns_volterra_managed = true
     port                 = "80"
   }
-  // One of the arguments from this list "enable_malicious_user_detection disable_malicious_user_detection" must be set
+
   enable_malicious_user_detection = true
-
-  disable_rate_limit = true
-
-  // One of the arguments from this list "service_policies_from_namespace no_service_policies active_service_policies" must be set
+  disable_rate_limit              = true
   service_policies_from_namespace = true
-
   disable_trust_client_ip_headers = true
+  user_id_client_ip               = true
 
-  // One of the arguments from this list "user_id_client_ip user_identification" must be set
-  user_id_client_ip = true
-  // One of the arguments from this list "disable_waf app_firewall" must be set
-  disable_waf = true
+  app_firewall {
+    name      = "${var.name}-waap"
+    namespace = var.namespace
+  }
+
+  enable_api_discovery {
+    enable_learn_from_redirect_traffic = true
+  }
+  enable_ip_reputation {
+    ip_threat_categories = ["SPAM_SOURCES"]
+  }
+
+  client_side_defense {
+    policy {
+      js_insert_all_pages = true
+    }
+  }
+
+  cors_policy {
+    allow_origin = [
+      "raw.githubusercontent.com"
+    ]
+    allow_origin_regex = []
+    allow_methods      = "GET"
+  }
+  bot_defense {
+    regional_endpoint = "US"
+    policy {
+      protected_app_endpoints {
+        metadata {
+          name    = "login"
+          disable = false
+        }
+        http_methods = ["METHOD_POST"]
+        flow_label {
+          authentication {
+            login {
+              disable_transaction_result = true
+            }
+          }
+        }
+        protocol   = "BOTH"
+        any_domain = true
+        path {
+          prefix = "/login"
+        }
+        web = true
+        mitigation {
+          block {
+            status = "OK"
+            body   = "string:///VGhlIHJlcXVlc3RlZCBVUkwgd2FzIHJlamVjdGVkLiBQbGVhc2UgY29uc3VsdCB3aXRoIHlvdXIgYWRtaW5pc3RyYXRvci4="
+          }
+        }
+      }
+      js_insert_all_pages {
+        javascript_location = "AFTER_HEAD"
+      }
+      js_download_path   = "/common.js"
+      disable_mobile_sdk = true
+    }
+    timeout = "1000"
+  }
+
+  more_option {
+    request_headers_to_add {
+      name   = "geo-country"
+      value  = "$[geoip_country]"
+      append = false
+    }
+    request_headers_to_add {
+      name   = "Access-Control-Allow-Origin"
+      value  = "*"
+      append = false
+    }
+  }
 
   routes {
     redirect_route {
@@ -76,7 +141,7 @@ resource "volterra_http_loadbalancer" "example" {
       }
       route_redirect {
         proto_redirect    = "incoming-proto"
-        host_redirect     = "dummy.f5-sa.myedgedemo.com"
+        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
         path_redirect     = "/fr/"
         response_code     = "301"
         retain_all_params = true
@@ -97,7 +162,7 @@ resource "volterra_http_loadbalancer" "example" {
       }
       route_redirect {
         proto_redirect    = "incoming-proto"
-        host_redirect     = "dummy.f5-sa.myedgedemo.com"
+        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
         path_redirect     = "/pt/"
         response_code     = "301"
         retain_all_params = true
@@ -118,7 +183,7 @@ resource "volterra_http_loadbalancer" "example" {
       }
       route_redirect {
         proto_redirect    = "incoming-proto"
-        host_redirect     = "dummy.f5-sa.myedgedemo.com"
+        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
         path_redirect     = "/es/"
         response_code     = "301"
         retain_all_params = true
@@ -135,7 +200,7 @@ resource "volterra_http_loadbalancer" "example" {
       origin_pools {
         pool {
           namespace = var.namespace
-          name      = volterra_origin_pool.crunchy.name
+          name      = volterra_origin_pool.origin.name
         }
         weight   = 1
         priority = 1
@@ -151,7 +216,7 @@ resource "volterra_http_loadbalancer" "example" {
       origin_pools {
         pool {
           namespace = var.namespace
-          name      = volterra_origin_pool.crunchy.name
+          name      = volterra_origin_pool.origin.name
         }
         weight   = 1
         priority = 1
@@ -171,7 +236,7 @@ resource "volterra_http_loadbalancer" "example" {
       }
       route_redirect {
         proto_redirect    = "incoming-proto"
-        host_redirect     = "dummy.f5-sa.myedgedemo.com"
+        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
         path_redirect     = "/en-us/"
         response_code     = "301"
         retain_all_params = true
@@ -188,7 +253,7 @@ resource "volterra_http_loadbalancer" "example" {
       origin_pools {
         pool {
           namespace = var.namespace
-          name      = volterra_origin_pool.crunchy.name
+          name      = volterra_origin_pool.origin.name
         }
         weight   = 1
         priority = 1
@@ -204,7 +269,7 @@ resource "volterra_http_loadbalancer" "example" {
       origin_pools {
         pool {
           namespace = var.namespace
-          name      = volterra_origin_pool.crunchy.name
+          name      = volterra_origin_pool.origin.name
         }
         weight   = 1
         priority = 1

@@ -1,25 +1,11 @@
 resource "volterra_service_policy" "coleman-policy" {
-  name      = "coleman-web"
+  name      = "${var.name}-service-policy"
   namespace = var.namespace
 
   algo = "FIRST_MATCH"
 
   allow_list {
-    asn_list {
-      as_numbers = [
-        713,
-        7932,
-        847325,
-        4683,
-        15269,
-        1000001
-      ]
-    }
 
-    asn_set {
-      name      = "test1"
-      namespace = var.namespace
-    }
 
     // One of the arguments from this list "default_action_next_policy default_action_deny default_action_allow" must be set
     default_action_next_policy = true
@@ -31,6 +17,46 @@ resource "volterra_service_policy" "coleman-policy" {
     //tls_fingerprint_classes = ["tls_fingerprint_classes"]
 
     //tls_fingerprint_values = ["tls_fingerprint_values"]
+  }
+  deny_list {
+    asn_list {
+      as_numbers = [
+        204791,
+        205515,
+        208090,
+        28761,
+        41269,
+        43222,
+        43564,
+        49617,
+        59744,
+        8654
+      ]
+    }
+    country_list = [
+      "COUNTRY_BY",
+      "COUNTRY_BA",
+      "COUNTRY_BI",
+      "COUNTRY_CF",
+      "COUNTRY_CU",
+      "COUNTRY_IR",
+      "COUNTRY_IQ",
+      "COUNTRY_KP",
+      "COUNTRY_XK",
+      "COUNTRY_LY",
+      "COUNTRY_MK",
+      "COUNTRY_SO",
+      "COUNTRY_SD",
+      "COUNTRY_SY",
+      "COUNTRY_ZW",
+      "COUNTRY_CD",
+      "COUNTRY_LB",
+      "COUNTRY_NI",
+      "COUNTRY_RU",
+      "COUNTRY_SS",
+      "COUNTRY_VE",
+      "COUNTRY_YE"
+    ]
   }
   // One of the arguments from this list "any_server server_name server_selector server_name_matcher" must be set
   any_server = true
