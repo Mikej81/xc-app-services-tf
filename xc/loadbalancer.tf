@@ -281,4 +281,29 @@ resource "volterra_http_loadbalancer" "app-proxy" {
     }
   }
 
+  routes {
+    simple_route {
+      http_method = "ANY"
+      path {
+        prefix = "/written/"
+      }
+      origin_pools {
+        pool {
+          namespace = var.namespace
+          name      = volterra_origin_pool.origin.name
+        }
+        weight   = 1
+        priority = 1
+      }
+      advanced_options {
+        priority       = "DEFAULT"
+        prefix_rewrite = "/rewritten/"
+        app_firewall {
+          name      = "${var.name}-waap"
+          namespace = var.namespace
+        }
+      }
+    }
+  }
+
 }

@@ -9,6 +9,7 @@ Example of deploying Application Services in XC using Terraform.
 - Service Policy
 - Routes
   - [HEADER] Accept-Language Based Redirects
+  - [Rewrites] Path Rewritting
 - Bot Standard
 - Rate Limiting
 - Client Side Defense
