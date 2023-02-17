@@ -306,5 +306,25 @@ resource "volterra_http_loadbalancer" "app-proxy" {
       }
     }
   }
+  routes {
+    direct_response_route {
+      http_method = "ANY"
+      path {
+        prefix = "/thanks"
+      }
+      route_direct_response {
+        response_code = "200"
+        response_body = "You're Welcome."
+      }
+    }
+  }
+  routes {
+    custom_route_object {
+      route_ref {
+        namespace = var.namespace
+        name      = "${var.name}-custom-route"
+      }
+    }
+  }
 
 }

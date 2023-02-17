@@ -1,4 +1,4 @@
-resource "volterra_service_policy" "coleman-policy" {
+resource "volterra_service_policy" "policy" {
   name      = "${var.name}-service-policy"
   namespace = var.namespace
 
@@ -7,11 +7,10 @@ resource "volterra_service_policy" "coleman-policy" {
   allow_list {
 
 
-    // One of the arguments from this list "default_action_next_policy default_action_deny default_action_allow" must be set
     default_action_next_policy = true
 
     prefix_list {
-      prefixes = ["192.168.20.0/24"]
+      prefixes = ["0.0.0.0/0"]
     }
 
     //tls_fingerprint_classes = ["tls_fingerprint_classes"]

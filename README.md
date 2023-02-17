@@ -8,6 +8,10 @@ Example of deploying Application Services in XC using Terraform.
 - WAF
 - Service Policy
 - Routes
+  - Simple
+  - Redirect
+  - Direct Response
+  - Custom
   - [HEADER] Accept-Language Based Redirects
   - [Rewrites] Path Rewritting
   - [Rewrites] Manual Host Rewriting
