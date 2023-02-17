@@ -209,6 +209,7 @@ resource "volterra_http_loadbalancer" "app-proxy" {
         weight   = 1
         priority = 1
       }
+      host_rewrite = "coleman.myedgedemo.com"
     }
   }
   routes {
