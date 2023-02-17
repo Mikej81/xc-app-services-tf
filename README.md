@@ -8,7 +8,9 @@ Example of deploying Application Services in XC using Terraform.
 - WAF
 - Service Policy
 - Routes
+  - [HEADER] Accept-Language Based Redirects
 - Bot Standard
+- Rate Limiting
 - Client Side Defense
 - App Type & App Settings (ML)
 

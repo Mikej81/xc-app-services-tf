@@ -28,7 +28,7 @@ resource "volterra_origin_pool" "origin" {
   }
 }
 
-resource "volterra_http_loadbalancer" "example" {
+resource "volterra_http_loadbalancer" "app-proxy" {
   name      = "${var.name}-http-lb"
   namespace = var.namespace
 
@@ -47,7 +47,6 @@ resource "volterra_http_loadbalancer" "example" {
   }
 
   enable_malicious_user_detection = true
-  disable_rate_limit              = true
   service_policies_from_namespace = true
   disable_trust_client_ip_headers = true
   user_id_client_ip               = true
@@ -59,6 +58,11 @@ resource "volterra_http_loadbalancer" "example" {
 
   enable_api_discovery {
     enable_learn_from_redirect_traffic = true
+  }
+
+
+  api_rate_limit {
+    no_ip_allowed_list = true
   }
   enable_ip_reputation {
     ip_threat_categories = ["SPAM_SOURCES"]
