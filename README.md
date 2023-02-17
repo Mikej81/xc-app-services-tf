@@ -11,3 +11,25 @@ Example of deploying Application Services in XC using Terraform.
 - Bot Standard
 - Client Side Defense
 - App Type & App Settings (ML)
+
+## Usage
+
+Map the VES P12 Password to ENV Var
+
+```
+. ./prep.sh
+```
+
+Deploy
+
+```
+terraform init
+terraform plan
+terraform apply
+```
+
+Destroy
+
+```
+terraform destroy
+```

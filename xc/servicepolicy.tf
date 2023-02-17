@@ -58,6 +58,6 @@ resource "volterra_service_policy" "coleman-policy" {
       "COUNTRY_YE"
     ]
   }
-  // One of the arguments from this list "any_server server_name server_selector server_name_matcher" must be set
+
   any_server = true
 }
