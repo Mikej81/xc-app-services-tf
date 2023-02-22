@@ -9,14 +9,14 @@ Example of deploying Application Services in XC using Terraform.
 - Service Policy
 - Routes
   - Simple [iRule Replacement]
-  - Redirect [iRule Replacement]
+  - Redirect [iRule Replacement: HTTP::redirect]
   - Direct Response [iRule Replacement]
   - Custom
   - [HEADER] [iRule Replacement] Accept-Language Based Redirects
   - [HEADER] [iRule Replacement] WWW-Authenticate NTLM Killer
   - [Rewrites] [iRule Replacement] Path Rewritting
   - [Rewrites] [iRule Replacement] Manual Host Rewriting
-  - [iRule Replacement] when HTTP_REQUEST { set uri [HTTP::uri] if { $uri ends_with ".gif" } { pool my_pool }
+  - [iRule Replacement: Pool Command] when HTTP_REQUEST { set uri [HTTP::uri] if { $uri ends_with ".gif" } { pool my_pool }
 - Bot Standard
 - Rate Limiting
 - Client Side Defense
