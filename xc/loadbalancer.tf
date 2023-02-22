@@ -365,7 +365,7 @@ resource "volterra_http_loadbalancer" "app-proxy" {
 
   routes {
     simple_route {
-      http_method = "ANY"
+      http_method = "GET"
       path {
         regex = ".*(.jpg|.png|.gif)"
       }
