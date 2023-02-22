@@ -366,7 +366,8 @@ resource "volterra_http_loadbalancer" "app-proxy" {
           name      = "${var.name}-waap"
           namespace = var.namespace
         }
-        response_headers_to_remove = "Proxy-support"
+        response_headers_to_remove = ["Proxy-support"]
+
         response_headers_to_add {
           name   = "WWW-Authenticate"
           value  = "Negotiate"
