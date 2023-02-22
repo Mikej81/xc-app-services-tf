@@ -39,7 +39,8 @@ resource "volterra_http_loadbalancer" "app-proxy" {
 
   domains = ["${var.name}.${var.delegated_dns_domain}"]
 
-  round_robin = true
+  #round_robin = true
+  source_ip_stickiness = true
 
   http {
     dns_volterra_managed = true
@@ -66,6 +67,18 @@ resource "volterra_http_loadbalancer" "app-proxy" {
   }
   enable_ip_reputation {
     ip_threat_categories = ["SPAM_SOURCES"]
+  }
+
+  data_guard_rules {
+    metadata {
+      name    = "default-rule"
+      disable = false
+    }
+    apply_data_guard = true
+    any_domain       = true
+    path {
+      prefix = "/"
+    }
   }
 
   client_side_defense {

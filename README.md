@@ -5,7 +5,13 @@ XC application services in Terraform
 Example of deploying Application Services in XC using Terraform.
 
 - Load Balancer
+  - IP Reputation
+  - Dataguard
+  - Source IP Stickiness
 - WAF
+  - Blocking
+  - Default Detection
+  - Default Bot
 - Service Policy
 - Routes
   - Simple [iRule Replacement]
