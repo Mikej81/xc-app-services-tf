@@ -363,4 +363,21 @@ resource "volterra_http_loadbalancer" "app-proxy" {
     }
   }
 
+  routes {
+    simple_route {
+      http_method = "ANY"
+      path {
+        regex = ".*(.jpg|.png|.gif)"
+      }
+      origin_pools {
+        pool {
+          namespace = var.namespace
+          name      = volterra_origin_pool.origin.name
+        }
+        weight   = 1
+        priority = 1
+      }
+    }
+  }
+
 }

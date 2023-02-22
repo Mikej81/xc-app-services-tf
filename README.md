@@ -16,6 +16,7 @@ Example of deploying Application Services in XC using Terraform.
   - [HEADER] [iRule Replacement] WWW-Authenticate NTLM Killer
   - [Rewrites] [iRule Replacement] Path Rewritting
   - [Rewrites] [iRule Replacement] Manual Host Rewriting
+  - [iRule Replacement] when HTTP_REQUEST { set uri [HTTP::uri] if { $uri ends_with ".gif" } { pool my_pool }
 - Bot Standard
 - Rate Limiting
 - Client Side Defense
