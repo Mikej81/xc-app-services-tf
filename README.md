@@ -10,10 +10,10 @@ Example of deploying Application Services in XC using Terraform.
 - Routes
   - Simple [iRule Replacement]
   - Redirect [iRule Replacement]
-  - Direct Response [iRule Repalcement]
+  - Direct Response [iRule Replacement]
   - Custom
-  - [HEADER] [iRule Repalcement] Accept-Language Based Redirects
-  - [HEADER] [iRule Repalcement] WWW-Authenticate NTLM Killer
+  - [HEADER] [iRule Replacement] Accept-Language Based Redirects
+  - [HEADER] [iRule Replacement] WWW-Authenticate NTLM Killer
   - [Rewrites] [iRule Replacement] Path Rewritting
   - [Rewrites] [iRule Replacement] Manual Host Rewriting
 - Bot Standard
