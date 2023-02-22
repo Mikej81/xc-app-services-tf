@@ -113,13 +113,37 @@ resource "volterra_http_loadbalancer" "app-proxy" {
         protocol   = "BOTH"
         any_domain = true
         path {
-          prefix = "/login"
+          prefix = "/login/"
         }
         web = true
         mitigation {
           block {
             status = "OK"
             body   = "string:///VGhlIHJlcXVlc3RlZCBVUkwgd2FzIHJlamVjdGVkLiBQbGVhc2UgY29uc3VsdCB3aXRoIHlvdXIgYWRtaW5pc3RyYXRvci4="
+          }
+        }
+      }
+      protected_app_endpoints {
+        metadata {
+          name    = "web-scraping"
+          disable = false
+        }
+        http_methods = ["METHOD_GET_DOCUMENT"]
+        flow_label {
+          search {
+            product_search = true
+          }
+        }
+        protocol   = "BOTH"
+        any_domain = true
+        path {
+          prefix = "/"
+        }
+        web = true
+        mitigation {
+          block {
+            status = "OK"
+            body   = "string:///VGhlIHJlcXVlc3RlZCBVUkwgd2FzIHJlamVjdGVkLCBCb3QhIFBsZWFzZSBjb25zdWx0IHdpdGggeW91ciBhZG1pbmlzdHJhdG9yLg=="
           }
         }
       }

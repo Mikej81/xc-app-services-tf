@@ -5,8 +5,6 @@ resource "volterra_service_policy" "policy" {
   algo = "FIRST_MATCH"
 
   allow_list {
-
-
     default_action_next_policy = true
 
     prefix_list {
