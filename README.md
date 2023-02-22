@@ -25,13 +25,13 @@ Example of deploying Application Services in XC using Terraform.
 
 Map the VES P12 Password to ENV Var
 
-```
+```bash
 . ./prep.sh
 ```
 
 Deploy
 
-```
+```bash
 terraform init
 terraform plan
 terraform apply
@@ -39,6 +39,6 @@ terraform apply
 
 Destroy
 
-```
+```bash
 terraform destroy
 ```
