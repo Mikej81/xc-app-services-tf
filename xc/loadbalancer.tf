@@ -327,4 +327,40 @@ resource "volterra_http_loadbalancer" "app-proxy" {
     }
   }
 
+  routes {
+    simple_route {
+      http_method = "ANY"
+      path {
+        prefix = "/"
+      }
+      headers {
+        name         = "WWW-Authenticate"
+        regex        = "(.*[nN][tT][lL][mM].*)"
+        invert_match = false
+      }
+      origin_pools {
+        pool {
+          namespace = var.namespace
+          name      = volterra_origin_pool.origin.name
+        }
+        weight   = 1
+        priority = 1
+      }
+      advanced_options {
+        priority       = "DEFAULT"
+        prefix_rewrite = "/rewritten/"
+        app_firewall {
+          name      = "${var.name}-waap"
+          namespace = var.namespace
+        }
+        response_headers_to_remove = "Proxy-support"
+        response_headers_to_add {
+          name   = "WWW-Authenticate"
+          value  = "Negotiate"
+          append = false
+        }
+      }
+    }
+  }
+
 }

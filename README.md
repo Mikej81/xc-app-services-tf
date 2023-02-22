@@ -8,13 +8,14 @@ Example of deploying Application Services in XC using Terraform.
 - WAF
 - Service Policy
 - Routes
-  - Simple
-  - Redirect
-  - Direct Response
+  - Simple [iRule Replacement]
+  - Redirect [iRule Replacement]
+  - Direct Response [iRule Repalcement]
   - Custom
-  - [HEADER] Accept-Language Based Redirects
-  - [Rewrites] Path Rewritting
-  - [Rewrites] Manual Host Rewriting
+  - [HEADER] [iRule Repalcement] Accept-Language Based Redirects
+  - [HEADER] [iRule Repalcement] WWW-Authenticate NTLM Killer
+  - [Rewrites] [iRule Replacement] Path Rewritting
+  - [Rewrites] [iRule Replacement] Manual Host Rewriting
 - Bot Standard
 - Rate Limiting
 - Client Side Defense
