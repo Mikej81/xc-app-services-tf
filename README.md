@@ -2,6 +2,8 @@
 
 ## Example(s) of deploying Application (Security) Services in F5 XC using Terraform
 
+This repo demonstrates many of the security service configurations as well as examples of how to replace iRules in XC using Service Policies and L7 Routes.
+
 - Load Balancer
   - IP Reputation
   - Dataguard
