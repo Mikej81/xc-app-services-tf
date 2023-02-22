@@ -1,14 +1,12 @@
 # xc-app-services-tf
 
-XC application services in Terraform
-
-Example of deploying Application Services in XC using Terraform.
+## Example(s) of deploying Application (Security) Services in F5 XC using Terraform
 
 - Load Balancer
   - IP Reputation
   - Dataguard
   - Source IP Stickiness
-- WAF
+- WAAP / WAF
   - Blocking
   - Default Detection
   - Default Bot
