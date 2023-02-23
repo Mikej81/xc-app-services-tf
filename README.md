@@ -11,13 +11,16 @@ This repo demonstrates many of the security service configurations as well as ex
 - WAAP / WAF
   - Blocking
   - Default Detection
+  - Threat Campaigns
   - Default Bot
 - Service Policy
-  - Deny ASN
-  - Deny Country List
   - Allow IPv4 Prefix
+  - Deny by ASN
+  - Deny by Country List
+  - Deny by Header
+  - Deny by IP Reputation
 - Routes
-  - Simple [iRule Replacement]
+  - Simple
   - Redirect [iRule Replacement: HTTP::redirect]
   - Direct Response [iRule Replacement HTTP::respond]
   - Custom

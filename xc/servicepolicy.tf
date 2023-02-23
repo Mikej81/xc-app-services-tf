@@ -2,59 +2,120 @@ resource "volterra_service_policy" "policy" {
   name      = "${var.name}-service-policy"
   namespace = var.namespace
 
-  algo = "FIRST_MATCH"
-
-  allow_list {
-    default_action_next_policy = true
-
-    prefix_list {
-      prefixes = ["0.0.0.0/0"]
-    }
-
-    //tls_fingerprint_classes = ["tls_fingerprint_classes"]
-
-    //tls_fingerprint_values = ["tls_fingerprint_values"]
-  }
-  deny_list {
-    asn_list {
-      as_numbers = [
-        204791,
-        205515,
-        208090,
-        28761,
-        41269,
-        43222,
-        43564,
-        49617,
-        59744,
-        8654
-      ]
-    }
-    country_list = [
-      "COUNTRY_BY",
-      "COUNTRY_BA",
-      "COUNTRY_BI",
-      "COUNTRY_CF",
-      "COUNTRY_CU",
-      "COUNTRY_IR",
-      "COUNTRY_IQ",
-      "COUNTRY_KP",
-      "COUNTRY_XK",
-      "COUNTRY_LY",
-      "COUNTRY_MK",
-      "COUNTRY_SO",
-      "COUNTRY_SD",
-      "COUNTRY_SY",
-      "COUNTRY_ZW",
-      "COUNTRY_CD",
-      "COUNTRY_LB",
-      "COUNTRY_NI",
-      "COUNTRY_RU",
-      "COUNTRY_SS",
-      "COUNTRY_VE",
-      "COUNTRY_YE"
-    ]
-  }
-
+  algo       = "FIRST_MATCH"
   any_server = true
+
+  rule_list {
+    rules {
+      metadata {
+        name    = "allow-prefix"
+        disable = false
+      }
+      spec {
+
+        action     = "ALLOW"
+        any_client = true
+        ip_prefix_list {
+          ip_prefixes  = ["0.0.0.0/0"]
+          invert_match = false
+        }
+        any_asn = true
+        waf_action {
+          none = true
+        }
+      }
+    }
+    rules {
+      metadata {
+        name    = "deny-header"
+        disable = false
+      }
+
+      spec {
+        action     = "DENY"
+        any_client = true
+        any_asn    = true
+        headers {
+          name = "Host"
+          item {
+            exact_values = ["domain.com"]
+          }
+          invert_matcher = false
+        }
+        waf_action {
+          none = true
+        }
+      }
+    }
+    rules {
+      metadata {
+        name    = "deny-asn"
+        disable = false
+      }
+      spec {
+        action = "DENY"
+        asn_list {
+          as_numbers = [
+            204791,
+            205515,
+            208090,
+            28761,
+            41269,
+            43222,
+            43564,
+            49617,
+            59744,
+            8654
+          ]
+        }
+        waf_action {
+          none = true
+        }
+      }
+    }
+    rules {
+      metadata {
+        name    = "deny-country-list"
+        disable = false
+      }
+      spec {
+        action = "DENY"
+        client_selector {
+          expressions = [
+            "geoip.ves.io/country in (BY, BA, BI, CF, CU, IR, IQ, KP, XK, LY, MK, SO, SD, SY, ZW,CD, LB, NI, RU,SS, VE, YE)"
+          ]
+        }
+        waf_action {
+          none = true
+        }
+      }
+    }
+
+    rules {
+      metadata {
+        name    = "deny-ip-reputation"
+        disable = false
+      }
+      spec {
+        action = "DENY"
+        ip_threat_category_list {
+          ip_threat_categories = [
+            "SPAM_SOURCES",
+            "REPUTATION",
+            "PROXY",
+            "TOR_PROXY",
+            "DENIAL_OF_SERVICE",
+            "NETWORK",
+            "BOTNETS",
+            "WEB_ATTACKS"
+          ]
+        }
+        waf_action {
+          none = true
+        }
+      }
+    }
+  }
+
+
 }
