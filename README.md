@@ -19,7 +19,7 @@ This repo demonstrates many of the security service configurations as well as ex
 - Routes
   - Simple [iRule Replacement]
   - Redirect [iRule Replacement: HTTP::redirect]
-  - Direct Response [iRule Replacement]
+  - Direct Response [iRule Replacement HTTP::respond]
   - Custom
   - [HEADER] [iRule Replacement] Accept-Language Based Redirects
   - [HEADER] [iRule Replacement] WWW-Authenticate NTLM Killer
@@ -32,6 +32,9 @@ This repo demonstrates many of the security service configurations as well as ex
 - Rate Limiting
 - Client Side Defense
 - App Type & App Settings (ML)
+  - User Behavior Analysis (Malicious User Detection)
+  - API Discovery
+  - [DDoS] Time Series Analysis
 
 ## Usage
 
