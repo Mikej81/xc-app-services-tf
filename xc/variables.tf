@@ -11,3 +11,4 @@ variable "delegated_dns_domain" {}
 variable "api_url" {}
 variable "tags" {}
 variable "fleet_label" {}
+variable "lb_count" {}

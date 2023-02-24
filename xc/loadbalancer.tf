@@ -28,8 +28,14 @@ resource "volterra_origin_pool" "origin" {
   }
 }
 
-resource "volterra_http_loadbalancer" "app-proxy" {
-  name      = "${var.name}-http-lb"
+resource "random_pet" "loadbalancer" {
+  count  = var.lb_count
+  length = 2
+}
+
+resource "volterra_http_loadbalancer" "appProxy" {
+  count     = var.lb_count
+  name      = "${var.name}-${random_pet.loadbalancer[count.index].id}-http-lb"
   namespace = var.namespace
 
   advertise_on_public_default_vip = true
@@ -37,7 +43,8 @@ resource "volterra_http_loadbalancer" "app-proxy" {
   no_challenge                    = true
   disable_ddos_detection          = true
 
-  domains = ["${var.name}.${var.delegated_dns_domain}"]
+  #domains = ["${var.name}.${var.delegated_dns_domain}"]
+  domains = ["${random_pet.loadbalancer[count.index].id}.${var.delegated_dns_domain}"]
 
   #round_robin = true
   source_ip_stickiness = true

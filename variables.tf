@@ -33,6 +33,8 @@ variable "sshPublicKeyPath" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
+
+
 ########################
 ## F5 XCS Variables   ##
 ########################
@@ -97,4 +99,14 @@ variable "tags" {
     creator     = "Terraform"
     delete      = "True"
   }
+}
+
+########################
+## Count Example Var  ##
+########################
+# Do not use unless you intend to load test API, expect 429s if set too high.
+variable "lb_count" {
+  type        = number
+  description = "How many Load Balancers to Create"
+  default     = 1
 }

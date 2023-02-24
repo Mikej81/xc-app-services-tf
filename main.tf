@@ -21,4 +21,5 @@ module "xc" {
   api_p12_file         = var.api_p12_file
   delegated_dns_domain = var.delegated_dns_domain
   tags                 = var.tags
+  lb_count             = var.lb_count
 }
