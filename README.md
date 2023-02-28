@@ -4,10 +4,15 @@
 
 This repo demonstrates many of the security service configurations as well as examples of how to replace iRules in XC using Service Policies and L7 Routes.
 
-- Load Balancer
+- HTTP Load Balancer
   - IP Reputation
   - Dataguard
   - Source IP Stickiness
+- TCP Load Balancer
+  - SSH Load Balancer
+  - Source IP Stickiness
+- UDP Load Balancer
+  - DNS Load Balancer
 - WAAP / WAF
   - Blocking
   - Default Detection

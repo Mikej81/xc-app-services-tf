@@ -1,5 +1,5 @@
-resource "volterra_endpoint" "endpoints" {
-  name      = "${var.name}-endpoint"
+resource "volterra_advertise_policy" "udp-advertise" {
+  name      = "${var.name}-udp-advertise"
   namespace = var.namespace
 
   where {
@@ -9,9 +9,9 @@ resource "volterra_endpoint" "endpoints" {
         namespace = "shared"
         name      = "public"
       }
+
     }
   }
-  protocol = "TCP"
-  port     = "443"
-  dns_name = "coleman.myedgedemo.com"
+  protocol = "UDP"
+  port     = 5553
 }
