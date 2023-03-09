@@ -65,3 +65,7 @@ Destroy
 ```bash
 terraform destroy
 ```
+
+## Support
+
+Bugs and enhancements can be made by opening an `issue` within the `GitHub` repository.
