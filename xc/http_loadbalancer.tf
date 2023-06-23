@@ -9,7 +9,7 @@ resource "volterra_origin_pool" "origin" {
   origin_servers {
 
     public_name {
-      dns_name = "coleman.myedgedemo.com"
+      dns_name = var.origin_destination
     }
 
     labels = {
@@ -28,14 +28,8 @@ resource "volterra_origin_pool" "origin" {
   }
 }
 
-resource "random_pet" "loadbalancer" {
-  count  = var.lb_count
-  length = 2
-}
-
 resource "volterra_http_loadbalancer" "appProxy" {
-  count     = var.lb_count
-  name      = "${var.name}-${random_pet.loadbalancer[count.index].id}-http-lb"
+  name      = "${var.name}-http-lb"
   namespace = var.namespace
 
   advertise_on_public_default_vip = true
@@ -44,7 +38,7 @@ resource "volterra_http_loadbalancer" "appProxy" {
   disable_ddos_detection          = true
 
   #domains = ["${var.name}.${var.delegated_dns_domain}"]
-  domains = ["${random_pet.loadbalancer[count.index].id}.${var.delegated_dns_domain}"]
+  domains = ["${var.dns_domain}"]
 
   #round_robin = true
   source_ip_stickiness = true
@@ -189,7 +183,7 @@ resource "volterra_http_loadbalancer" "appProxy" {
       }
       route_redirect {
         proto_redirect    = "incoming-proto"
-        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
+        host_redirect     = "${var.name}.${var.dns_domain}"
         path_redirect     = "/fr/"
         response_code     = "301"
         retain_all_params = true
@@ -210,7 +204,7 @@ resource "volterra_http_loadbalancer" "appProxy" {
       }
       route_redirect {
         proto_redirect    = "incoming-proto"
-        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
+        host_redirect     = "${var.name}.${var.dns_domain}"
         path_redirect     = "/pt/"
         response_code     = "301"
         retain_all_params = true
@@ -231,7 +225,7 @@ resource "volterra_http_loadbalancer" "appProxy" {
       }
       route_redirect {
         proto_redirect    = "incoming-proto"
-        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
+        host_redirect     = "${var.name}.${var.dns_domain}"
         path_redirect     = "/es/"
         response_code     = "301"
         retain_all_params = true
@@ -285,7 +279,7 @@ resource "volterra_http_loadbalancer" "appProxy" {
       }
       route_redirect {
         proto_redirect    = "incoming-proto"
-        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
+        host_redirect     = "${var.name}.${var.dns_domain}"
         path_redirect     = "/en-us/"
         response_code     = "301"
         retain_all_params = true

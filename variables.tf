@@ -34,7 +34,6 @@ variable "sshPublicKeyPath" {
 }
 
 
-
 ########################
 ## F5 XCS Variables   ##
 ########################
@@ -64,13 +63,12 @@ variable "tenant_name" {
 }
 // Required Variable
 variable "namespace" {
-  type        = string
-  description = "REQUIRED:  This is your Volterra App Namespace"
-  default     = "namespace"
 }
-variable "delegated_dns_domain" {
-  default = "testdomain.com"
+variable "dns_domain" {
 }
+variable "origin_destination" {
+}
+
 // Required Variable
 variable "api_url" {
   type        = string
@@ -99,14 +97,4 @@ variable "tags" {
     creator     = "Terraform"
     delete      = "True"
   }
-}
-
-########################
-## Count Example Var  ##
-########################
-# Do not use unless you intend to load test API, expect 429s if set too high.  Setting too high will exceed LB and Route Quotas.
-variable "lb_count" {
-  type        = number
-  description = "How many Load Balancers to Create"
-  default     = 1
 }

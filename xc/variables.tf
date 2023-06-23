@@ -7,8 +7,8 @@ variable "sshPublicKeyPath" {}
 variable "api_p12_file" {}
 variable "tenant_name" {}
 variable "namespace" {}
-variable "delegated_dns_domain" {}
+variable "dns_domain" {}
 variable "api_url" {}
 variable "tags" {}
 variable "fleet_label" {}
-variable "lb_count" {}
+variable "origin_destination" {}
