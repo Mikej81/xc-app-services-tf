@@ -1,6 +1,7 @@
 resource "volterra_app_firewall" "example" {
-  name      = "${var.name}-waap"
-  namespace = var.namespace
+  depends_on = [volterra_namespace.namespace]
+  name       = "${var.name}-waap"
+  namespace  = var.namespace
   labels = {
     "ves.io/app_type" = "${var.name}-app-type"
   }

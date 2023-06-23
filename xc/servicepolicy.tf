@@ -1,6 +1,7 @@
 resource "volterra_service_policy" "policy" {
-  name      = "${var.name}-service-policy"
-  namespace = var.namespace
+  depends_on = [volterra_namespace.namespace]
+  name       = "${var.name}-service-policy"
+  namespace  = var.namespace
 
   algo       = "FIRST_MATCH"
   any_server = true
