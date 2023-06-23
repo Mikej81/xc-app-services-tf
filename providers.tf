@@ -20,3 +20,7 @@ provider "volterrarm" {
 
 provider "http" {
 }
+
+provider "aws" {
+  #region = "us-east-1"
+}

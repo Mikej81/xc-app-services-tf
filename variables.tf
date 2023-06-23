@@ -7,7 +7,7 @@
 variable "name" {
   type        = string
   description = "Application name"
-  default     = "titan"
+  default     = "modivare-app"
 }
 
 variable "environment" {
@@ -42,7 +42,7 @@ variable "sshPublicKeyPath" {
 variable "api_p12_file" {
   type        = string
   description = "REQUIRED:  This is the path to the Volterra API Key.  See https://volterra.io/docs/how-to/user-mgmt/credentials"
-  default     = "./api-creds.p12"
+  default     = "./creds/console.ves.volterra.io.api-creds.p12"
 }
 
 variable "api_cert" {
@@ -73,15 +73,10 @@ variable "origin_destination" {
 variable "api_url" {
   type        = string
   description = "REQUIRED:  This is your Volterra API url"
-  default     = "https://playground.console.ves.volterra.io/api"
+  default     = "https://mr-customer.console.ves.volterra.io/api"
 }
 variable "fleet_label" { default = "fleet_label" }
 
-variable "instance_type" {
-  description = "XCS EC2 node instance type"
-  type        = string
-  default     = "t3.xlarge"
-}
 
 ## TAGS
 variable "tags" {

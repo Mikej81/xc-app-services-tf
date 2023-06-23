@@ -1,6 +1,7 @@
 resource "volterra_app_setting" "app-setting" {
-  name      = "${var.name}-app-setting"
-  namespace = var.namespace
+  depends_on = [volterra_namespace.namespace]
+  name       = "${var.name}-app-setting"
+  namespace  = var.namespace
 
   app_type_settings {
     app_type_ref {
