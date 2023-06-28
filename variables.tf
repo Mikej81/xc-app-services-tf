@@ -7,7 +7,7 @@
 variable "name" {
   type        = string
   description = "Application name"
-  default     = "modivare-app"
+  default     = "random-app"
 }
 
 variable "environment" {

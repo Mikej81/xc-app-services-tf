@@ -2,9 +2,6 @@ resource "volterra_app_firewall" "example" {
   depends_on = [volterra_namespace.namespace]
   name       = "${var.name}-waap"
   namespace  = var.namespace
-  labels = {
-    "ves.io/app_type" = "${var.name}-app-type"
-  }
 
   blocking                   = true
   default_detection_settings = true

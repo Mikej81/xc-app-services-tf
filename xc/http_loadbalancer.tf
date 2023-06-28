@@ -31,6 +31,10 @@ resource "volterra_origin_pool" "origin" {
     skip_server_verification = true
     no_mtls                  = true
   }
+
+  advanced_options {
+    http1_config = true
+  }
 }
 
 resource "volterra_http_loadbalancer" "appProxy" {
@@ -72,15 +76,6 @@ resource "volterra_http_loadbalancer" "appProxy" {
   enable_ip_reputation {
     ip_threat_categories = ["SPAM_SOURCES"]
   }
-
-  cors_policy {
-    allow_origin = [
-      "raw.githubusercontent.com"
-    ]
-    allow_origin_regex = []
-    allow_methods      = "GET"
-  }
-
 
 
 }
