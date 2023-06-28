@@ -2,7 +2,7 @@ terraform {
   required_providers {
     volterrarm = {
       source  = "volterraedge/volterra"
-      version = "0.11.19"
+      version = "0.11.23"
     }
     http = {
       source  = "hashicorp/http"

@@ -47,11 +47,10 @@ resource "volterra_http_loadbalancer" "appProxy" {
   no_challenge                    = true
   disable_ddos_detection          = true
 
-  #domains = ["${var.name}.${var.delegated_dns_domain}"]
   domains = ["${var.dns_domain}"]
 
-  #round_robin = true
-  source_ip_stickiness = true
+  round_robin = true
+  #source_ip_stickiness = true
 
   https_auto_cert {
     http_redirect = true
