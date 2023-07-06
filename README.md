@@ -11,7 +11,7 @@ This branch has been significantly modified to demonstrate auto_cert challenge i
 Map the VES P12 Password to ENV Var
 
 ```bash
-. ./eample_prep.sh
+. ./example_prep.sh
 ```
 
 Deploy
