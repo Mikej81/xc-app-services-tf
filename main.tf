@@ -24,11 +24,11 @@ module "xc" {
   tags               = var.tags
 }
 
-# module "aws" {
-#   source              = "./aws"
-#   depends_on          = [module.xc]
-#   dns_challenge_name  = module.xc.challenge_name
-#   dns_challenge_value = module.xc.challenge_value
-#   lb_dns_name         = var.dns_domain
-#   lb_public_address   = module.xc.lb_ip_address
-# }
+module "aws" {
+  source              = "./aws"
+  depends_on          = [module.xc]
+  dns_challenge_name  = module.xc.challenge_name
+  dns_challenge_value = module.xc.challenge_value
+  lb_dns_name         = var.dns_domain
+  lb_public_address   = module.xc.lb_ip_address
+}
