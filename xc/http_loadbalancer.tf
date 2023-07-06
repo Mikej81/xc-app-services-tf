@@ -1,12 +1,12 @@
 
-resource "volterra_namespace" "namespace" {
-  name = var.namespace
-}
+# resource "volterra_namespace" "namespace" {
+#   name = var.namespace
+# }
 
 resource "volterra_origin_pool" "origin" {
-  depends_on = [volterra_namespace.namespace]
-  name       = "${var.name}-origin"
-  namespace  = var.namespace
+  #depends_on = [volterra_namespace.namespace]
+  name      = "${var.name}-origin"
+  namespace = var.namespace
 
   endpoint_selection     = "LOCAL_PREFERRED"
   loadbalancer_algorithm = "LB_OVERRIDE"
@@ -37,10 +37,10 @@ resource "volterra_origin_pool" "origin" {
   }
 }
 
-resource "volterra_http_loadbalancer" "appProxy" {
-  depends_on = [volterra_namespace.namespace]
-  name       = "${var.name}-http-lb"
-  namespace  = var.namespace
+resource "volterra_http_loadbalancer" "app_proxy" {
+  #depends_on = [volterra_namespace.namespace]
+  name      = "${var.name}-http-lb"
+  namespace = var.namespace
 
   advertise_on_public_default_vip = true
   disable_api_definition          = true
@@ -76,5 +76,32 @@ resource "volterra_http_loadbalancer" "appProxy" {
     ip_threat_categories = ["SPAM_SOURCES"]
   }
 
+}
 
+# added timer to give the LB time to generate the challenge values
+resource "time_sleep" "wait_5_seconds" {
+  depends_on      = [volterra_http_loadbalancer.app_proxy]
+  create_duration = "15s"
+}
+
+data "volterra_http_loadbalancer_state" "lb_output" {
+  depends_on = [volterra_http_loadbalancer.app_proxy, time_sleep.wait_5_seconds]
+  namespace  = var.namespace
+  name       = volterra_http_loadbalancer.app_proxy.name
+
+}
+
+output "lb_ip_address" {
+  depends_on = [data.volterra_http_loadbalancer_state.lb_output]
+  value      = data.volterra_http_loadbalancer_state.lb_output.ip_address
+}
+
+output "challenge_name" {
+  depends_on = [data.volterra_http_loadbalancer_state.lb_output]
+  value      = flatten(data.volterra_http_loadbalancer_state.lb_output.auto_cert_info[*].dns_records[*].name)[0]
+}
+
+output "challenge_value" {
+  depends_on = [data.volterra_http_loadbalancer_state.lb_output]
+  value      = flatten(data.volterra_http_loadbalancer_state.lb_output.auto_cert_info[*].dns_records[*].value)[0]
 }

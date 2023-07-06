@@ -1,7 +1,7 @@
 resource "volterra_app_firewall" "example" {
-  depends_on = [volterra_namespace.namespace]
-  name       = "${var.name}-waap"
-  namespace  = var.namespace
+  #depends_on = [volterra_namespace.namespace]
+  name      = "${var.name}-waap"
+  namespace = var.namespace
 
   blocking                   = true
   default_detection_settings = true

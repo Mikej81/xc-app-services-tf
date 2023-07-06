@@ -8,6 +8,10 @@ terraform {
       source  = "hashicorp/http"
       version = "2.1.0"
     }
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
   }
 }
 
@@ -22,5 +26,7 @@ provider "http" {
 }
 
 provider "aws" {
-  #region = "us-east-1"
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
+  region     = var.aws_region
 }

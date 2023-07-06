@@ -61,6 +61,23 @@ variable "tenant_name" {
   description = "REQUIRED:  This is your Volterra Tenant Name:  https://<tenant_name>.console.ves.volterra.io/api"
   default     = "mr-customer"
 }
+
+########################
+## AWS Variables   ##
+########################
+
+// Required Variable
+variable "aws_access_key" {
+  default = "access_key"
+}
+variable "aws_secret_key" {
+  default = "key"
+}
+
+variable "aws_region" {
+  default = "us-east-1"
+}
+
 // Required Variable
 variable "namespace" {
 }
@@ -76,7 +93,6 @@ variable "api_url" {
   default     = "https://mr-customer.console.ves.volterra.io/api"
 }
 variable "fleet_label" { default = "fleet_label" }
-
 
 ## TAGS
 variable "tags" {
