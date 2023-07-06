@@ -1,12 +1,18 @@
+# added timer to give the LB time to generate the challenge values
+resource "time_sleep" "wait_5_seconds" {
+  depends_on      = [volterra_http_loadbalancer.app_proxy]
+  create_duration = "15s"
+}
 
-# resource "volterra_namespace" "namespace" {
-#   name = var.namespace
-# }
+
+resource "volterra_namespace" "namespace" {
+  name = var.namespace
+}
 
 resource "volterra_origin_pool" "origin" {
-  #depends_on = [volterra_namespace.namespace]
-  name      = "${var.name}-origin"
-  namespace = var.namespace
+  depends_on = [time_sleep.wait_5_seconds, volterra_namespace.namespace]
+  name       = "${var.name}-origin"
+  namespace  = var.namespace
 
   endpoint_selection     = "LOCAL_PREFERRED"
   loadbalancer_algorithm = "LB_OVERRIDE"
@@ -76,12 +82,23 @@ resource "volterra_http_loadbalancer" "app_proxy" {
     ip_threat_categories = ["SPAM_SOURCES"]
   }
 
-}
+  routes {
+    simple_route {
+      http_method = "ANY"
+      path {
+        prefix = "/"
+      }
+      origin_pools {
+        pool {
+          namespace = var.namespace
+          name      = volterra_origin_pool.origin.name
+        }
+        weight   = 1
+        priority = 1
+      }
+    }
+  }
 
-# added timer to give the LB time to generate the challenge values
-resource "time_sleep" "wait_5_seconds" {
-  depends_on      = [volterra_http_loadbalancer.app_proxy]
-  create_duration = "15s"
 }
 
 data "volterra_http_loadbalancer_state" "lb_output" {
