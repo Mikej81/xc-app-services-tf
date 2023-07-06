@@ -31,4 +31,5 @@ module "aws" {
   dns_challenge_value = module.xc.challenge_value
   lb_dns_name         = var.dns_domain
   lb_public_address   = module.xc.lb_ip_address
+  aws_route53_zone_id = var.aws_route53_zone_id
 }

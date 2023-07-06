@@ -1,18 +1,24 @@
-# added timer to give the LB time to generate the challenge values
-resource "time_sleep" "wait_5_seconds" {
-  depends_on      = [volterra_http_loadbalancer.app_proxy]
-  create_duration = "15s"
-}
-
-
-resource "volterra_namespace" "namespace" {
+data "volterra_namespace" "existing_namespace" {
   name = var.namespace
 }
 
+resource "volterra_namespace" "namespace" {
+  depends_on = [data.volterra_namespace.existing_namespace]
+  count      = 1 - signum(length(data.volterra_namespace.existing_namespace.id))
+  name       = var.namespace
+}
+
+# added timer to give the LB time to generate the challenge values
+resource "time_sleep" "wait_15_seconds" {
+  depends_on      = [volterra_namespace.namespace]
+  create_duration = "15s"
+}
+
 resource "volterra_origin_pool" "origin" {
-  depends_on = [time_sleep.wait_5_seconds, volterra_namespace.namespace]
-  name       = "${var.name}-origin"
-  namespace  = var.namespace
+  depends_on = [volterra_namespace.namespace, time_sleep.wait_15_seconds]
+  #depends_on = [time_sleep.wait_15_seconds]
+  name      = "${var.name}-origin"
+  namespace = var.namespace
 
   endpoint_selection     = "LOCAL_PREFERRED"
   loadbalancer_algorithm = "LB_OVERRIDE"
@@ -23,9 +29,6 @@ resource "volterra_origin_pool" "origin" {
       dns_name = var.origin_destination
     }
 
-    labels = {
-      "key1" = "value1"
-    }
   }
   port = 443
 
@@ -38,13 +41,14 @@ resource "volterra_origin_pool" "origin" {
     no_mtls                  = true
   }
 
-  advanced_options {
-    http1_config = true
-  }
+  # advanced_options {
+  #   http1_config = true
+  # }
 }
 
 resource "volterra_http_loadbalancer" "app_proxy" {
-  #depends_on = [volterra_namespace.namespace]
+  depends_on = [volterra_namespace.namespace, time_sleep.wait_15_seconds]
+  #depends_on = [time_sleep.wait_15_seconds]
   name      = "${var.name}-http-lb"
   namespace = var.namespace
 
@@ -101,8 +105,14 @@ resource "volterra_http_loadbalancer" "app_proxy" {
 
 }
 
+# added timer to give the LB time to generate the challenge values
+resource "time_sleep" "wait_15_seconds_again" {
+  depends_on      = [volterra_namespace.namespace, volterra_http_loadbalancer.app_proxy]
+  create_duration = "15s"
+}
+
 data "volterra_http_loadbalancer_state" "lb_output" {
-  depends_on = [volterra_http_loadbalancer.app_proxy, time_sleep.wait_5_seconds]
+  depends_on = [volterra_namespace.namespace, volterra_http_loadbalancer.app_proxy, time_sleep.wait_15_seconds_again]
   namespace  = var.namespace
   name       = volterra_http_loadbalancer.app_proxy.name
 
