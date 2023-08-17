@@ -1,18 +1,14 @@
 # xc-app-services-tf
 
-## Example(s) of deploying Application (Security) Services in F5 XC using Terraform
+## Example(s) of deploying Application (Security) Services in F5 XC with Venafi integration for LB Cert/Key
 
-This repo demonstrates many of the security service configurations as well as examples of how to replace iRules in XC using Service Policies and L7 Routes.
+This repo demonstrates several of the following; security service configurations, examples of how to replace iRules in XC using Service Policies and L7 Routes, Venafi integration.
 
 - HTTP Load Balancer
   - IP Reputation
   - Dataguard
   - Source IP Stickiness
-- TCP Load Balancer
-  - SSH Load Balancer
-  - Source IP Stickiness
-- UDP Load Balancer
-  - DNS Load Balancer
+  - Venafi Cert/Key
 - WAAP / WAF
   - Blocking
   - Default Detection
@@ -29,8 +25,6 @@ This repo demonstrates many of the security service configurations as well as ex
   - Redirect [iRule Replacement: HTTP::redirect]
   - Direct Response [iRule Replacement HTTP::respond]
   - Custom
-  - [HEADER] [iRule Replacement] Accept-Language Based Redirects
-  - [HEADER] [iRule Replacement] WWW-Authenticate NTLM Killer
   - [Rewrites] [iRule Replacement] URI Rewriting
   - [Rewrites] [iRule Replacement] Manual Host Rewriting
   - [iRule Replacement: Pool Command] when HTTP_REQUEST { set uri [HTTP::uri] if { $uri ends_with ".gif" } { pool my_pool }
@@ -49,8 +43,12 @@ This repo demonstrates many of the security service configurations as well as ex
 Map the VES P12 Password to ENV Var
 
 ```bash
-. ./prep.sh
+. ./example_prep.sh
 ```
+
+Configure
+
+Modify variables.tf, create tfvars or override, work with XC Specialist to configure for your needs.
 
 Deploy
 
