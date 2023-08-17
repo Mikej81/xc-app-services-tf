@@ -11,4 +11,6 @@ variable "delegated_dns_domain" {}
 variable "api_url" {}
 variable "tags" {}
 variable "fleet_label" {}
-variable "lb_count" {}
+variable "venafi_private_key" {}
+variable "venafi_certificate" {}
+variable "venafi_trust_chain" {}

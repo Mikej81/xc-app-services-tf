@@ -2,13 +2,23 @@ terraform {
   required_providers {
     volterrarm = {
       source  = "volterraedge/volterra"
-      version = "0.11.19"
+      version = "~> 0.11.19"
     }
     http = {
       source  = "hashicorp/http"
-      version = "2.1.0"
+      version = "~> 2.1.0"
+    }
+    venafi = {
+      source  = "Venafi/venafi"
+      version = "~> 0.16.1"
     }
   }
+}
+
+# Configure the Venafi provider
+provider "venafi" {
+  api_key = var.venafi_api_key
+  zone    = var.venafi_zone
 }
 
 provider "volterrarm" {

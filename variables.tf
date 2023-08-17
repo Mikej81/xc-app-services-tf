@@ -101,12 +101,14 @@ variable "tags" {
   }
 }
 
-########################
-## Count Example Var  ##
-########################
-# Do not use unless you intend to load test API, expect 429s if set too high.  Setting too high will exceed LB and Route Quotas.
-variable "lb_count" {
-  type        = number
-  description = "How many Load Balancers to Create"
-  default     = 1
+# Required Venafi Provider Values
+variable "venafi_api_key" {
+  description = "Venafi API Key"
+  type        = string
+  default     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
+variable "venafi_zone" {
+  description = "Venafi Zone"
+  type        = string
+  default     = "Business App\\Enterprise CIT"
 }

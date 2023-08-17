@@ -29,13 +29,11 @@ resource "volterra_origin_pool" "origin" {
 }
 
 resource "random_pet" "loadbalancer" {
-  count  = var.lb_count
   length = 2
 }
 
-resource "volterra_http_loadbalancer" "appProxy" {
-  count     = var.lb_count
-  name      = "${var.name}-${random_pet.loadbalancer[count.index].id}-http-lb"
+resource "volterra_http_loadbalancer" "app_proxy" {
+  name      = "${var.name}-${random_pet.loadbalancer.id}-http-lb"
   namespace = var.namespace
 
   advertise_on_public_default_vip = true
@@ -44,15 +42,29 @@ resource "volterra_http_loadbalancer" "appProxy" {
   disable_ddos_detection          = true
 
   #domains = ["${var.name}.${var.delegated_dns_domain}"]
-  domains = ["${random_pet.loadbalancer[count.index].id}.${var.delegated_dns_domain}"]
+  domains = ["${var.delegated_dns_domain}"]
 
   #round_robin = true
   source_ip_stickiness = true
 
-  http {
-    dns_volterra_managed = true
-    port                 = "80"
+  https {
+    http_redirect = true
+    add_hsts      = true
+    port          = 443
+    tls_parameters {
+      tls_certificates {
+        certificate_url = "string:///${base64encode(var.venafi_certificate)}"
+        private_key {
+          clear_secret_info {
+            provider = ""
+            url      = "string:///${base64encode(var.venafi_private_key)}"
+
+          }
+        }
+      }
+    }
   }
+
 
   enable_malicious_user_detection = true
   service_policies_from_namespace = true
@@ -176,69 +188,7 @@ resource "volterra_http_loadbalancer" "appProxy" {
     }
   }
 
-  routes {
-    redirect_route {
-      http_method = "ANY"
-      path {
-        path = "/"
-      }
-      headers {
-        name         = "Accept-Language"
-        regex        = "(.*[fF][rR]-[fF][rR].*$)"
-        invert_match = false
-      }
-      route_redirect {
-        proto_redirect    = "incoming-proto"
-        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
-        path_redirect     = "/fr/"
-        response_code     = "301"
-        retain_all_params = true
-        port_redirect     = 0
-      }
-    }
-  }
-  routes {
-    redirect_route {
-      http_method = "ANY"
-      path {
-        path = "/"
-      }
-      headers {
-        name         = "Accept-Language"
-        regex        = "(.*[pP][tT]-[bB][rR].*)"
-        invert_match = false
-      }
-      route_redirect {
-        proto_redirect    = "incoming-proto"
-        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
-        path_redirect     = "/pt/"
-        response_code     = "301"
-        retain_all_params = true
-        port_redirect     = 0
-      }
-    }
-  }
-  routes {
-    redirect_route {
-      http_method = "ANY"
-      path {
-        path = "/"
-      }
-      headers {
-        name         = "Accept-Language"
-        regex        = "(.*[eE][sS]-[0-9].*$)"
-        invert_match = false
-      }
-      route_redirect {
-        proto_redirect    = "incoming-proto"
-        host_redirect     = "${var.name}.${var.delegated_dns_domain}"
-        path_redirect     = "/es/"
-        response_code     = "301"
-        retain_all_params = true
-        port_redirect     = 0
-      }
-    }
-  }
+
   routes {
     simple_route {
       http_method = "ANY"
@@ -254,22 +204,6 @@ resource "volterra_http_loadbalancer" "appProxy" {
         priority = 1
       }
       host_rewrite = "coleman.myedgedemo.com"
-    }
-  }
-  routes {
-    simple_route {
-      http_method = "ANY"
-      path {
-        prefix = "/es/"
-      }
-      origin_pools {
-        pool {
-          namespace = var.namespace
-          name      = volterra_origin_pool.origin.name
-        }
-        weight   = 1
-        priority = 1
-      }
     }
   }
   routes {
@@ -290,38 +224,6 @@ resource "volterra_http_loadbalancer" "appProxy" {
         response_code     = "301"
         retain_all_params = true
         port_redirect     = 0
-      }
-    }
-  }
-  routes {
-    simple_route {
-      http_method = "ANY"
-      path {
-        prefix = "/fr/"
-      }
-      origin_pools {
-        pool {
-          namespace = var.namespace
-          name      = volterra_origin_pool.origin.name
-        }
-        weight   = 1
-        priority = 1
-      }
-    }
-  }
-  routes {
-    simple_route {
-      http_method = "ANY"
-      path {
-        prefix = "/pt/"
-      }
-      origin_pools {
-        pool {
-          namespace = var.namespace
-          name      = volterra_origin_pool.origin.name
-        }
-        weight   = 1
-        priority = 1
       }
     }
   }
@@ -373,43 +275,6 @@ resource "volterra_http_loadbalancer" "appProxy" {
 
   routes {
     simple_route {
-      http_method = "ANY"
-      path {
-        prefix = "/"
-      }
-      headers {
-        name         = "WWW-Authenticate"
-        regex        = "(.*[nN][tT][lL][mM].*)"
-        invert_match = false
-      }
-      origin_pools {
-        pool {
-          namespace = var.namespace
-          name      = volterra_origin_pool.origin.name
-        }
-        weight   = 1
-        priority = 1
-      }
-      advanced_options {
-        priority       = "DEFAULT"
-        prefix_rewrite = "/rewritten/"
-        app_firewall {
-          name      = "${var.name}-waap"
-          namespace = var.namespace
-        }
-        response_headers_to_remove = ["Proxy-support"]
-
-        response_headers_to_add {
-          name   = "WWW-Authenticate"
-          value  = "Negotiate"
-          append = false
-        }
-      }
-    }
-  }
-
-  routes {
-    simple_route {
       http_method = "GET"
       path {
         regex = ".*(.jpg|.png|.gif)"
@@ -425,4 +290,26 @@ resource "volterra_http_loadbalancer" "appProxy" {
     }
   }
 
+}
+
+# added timer to give the LB time to generate the challenge values
+resource "time_sleep" "wait_15_seconds_again" {
+  depends_on      = [volterra_http_loadbalancer.app_proxy]
+  create_duration = "15s"
+}
+
+data "volterra_http_loadbalancer_state" "lb_output" {
+  depends_on = [volterra_http_loadbalancer.app_proxy, time_sleep.wait_15_seconds_again]
+  namespace  = var.namespace
+  name       = volterra_http_loadbalancer.app_proxy.name
+}
+
+output "lb_ip_address" {
+  depends_on = [data.volterra_http_loadbalancer_state.lb_output]
+  value      = data.volterra_http_loadbalancer_state.lb_output.ip_address
+}
+
+output "lb_cname" {
+  depends_on = [data.volterra_http_loadbalancer_state.lb_output]
+  value      = data.volterra_http_loadbalancer_state.lb_output.cname
 }
