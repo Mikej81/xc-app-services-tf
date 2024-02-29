@@ -104,6 +104,7 @@ resource "volterra_http_loadbalancer" "appProxy" {
   bot_defense {
     regional_endpoint = "US"
     policy {
+      javascript_mode = "ASYNC_JS_NO_CACHING"
       protected_app_endpoints {
         metadata {
           name    = "login"

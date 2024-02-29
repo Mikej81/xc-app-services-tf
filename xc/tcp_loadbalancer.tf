@@ -51,6 +51,18 @@ resource "volterra_tcp_loadbalancer" "tcpProxy" {
 
   listen_port = 2222
 
+  # tls_tcp {
+  #   tls_cert_params {
+  #     tls_config {
+  #       default_security = true
+  #     }
+  #     certificates {
+  #       namespace = "shared"
+  #       name      = "coleman-multi"
+  #     }
+  #   }
+  # }
+
   origin_pools_weights {
     pool {
       namespace = var.namespace
