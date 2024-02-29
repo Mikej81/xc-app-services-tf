@@ -113,67 +113,6 @@ resource "volterra_http_loadbalancer" "app_proxy" {
     allow_origin_regex = []
     allow_methods      = "GET"
   }
-  bot_defense {
-    regional_endpoint = "US"
-    policy {
-      protected_app_endpoints {
-        metadata {
-          name    = "login"
-          disable = false
-        }
-        http_methods = ["METHOD_POST"]
-        flow_label {
-          authentication {
-            login {
-              disable_transaction_result = true
-            }
-          }
-        }
-        protocol   = "BOTH"
-        any_domain = true
-        path {
-          prefix = "/login/"
-        }
-        web = true
-        mitigation {
-          block {
-            status = "OK"
-            body   = "string:///VGhlIHJlcXVlc3RlZCBVUkwgd2FzIHJlamVjdGVkLiBQbGVhc2UgY29uc3VsdCB3aXRoIHlvdXIgYWRtaW5pc3RyYXRvci4="
-          }
-        }
-      }
-      protected_app_endpoints {
-        metadata {
-          name    = "web-scraping"
-          disable = false
-        }
-        http_methods = ["METHOD_GET_DOCUMENT"]
-        flow_label {
-          search {
-            product_search = true
-          }
-        }
-        protocol   = "BOTH"
-        any_domain = true
-        path {
-          prefix = "/"
-        }
-        web = true
-        mitigation {
-          block {
-            status = "OK"
-            body   = "string:///VGhlIHJlcXVlc3RlZCBVUkwgd2FzIHJlamVjdGVkLCBCb3QhIFBsZWFzZSBjb25zdWx0IHdpdGggeW91ciBhZG1pbmlzdHJhdG9yLg=="
-          }
-        }
-      }
-      js_insert_all_pages {
-        javascript_location = "AFTER_HEAD"
-      }
-      js_download_path   = "/common.js"
-      disable_mobile_sdk = true
-    }
-    timeout = "1000"
-  }
 
   more_option {
     request_headers_to_add {
