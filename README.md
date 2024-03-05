@@ -38,6 +38,12 @@ This repo demonstrates several of the following; security service configurations
   - API Discovery
   - [DDoS] Time Series Analysis
 
+## Prerequisites
+
+This branch uses Venafi to generate cert-key pairs and import into XC Load Balancers.  You must have a Venafi deployment to use this.  This branch also wraps vesctl to blindfold private keys, so you will need to download and configure vesctl.
+
+[https://gitlab.com/volterra.io/vesctl/blob/main/README.md](https://gitlab.com/volterra.io/vesctl/blob/main/README.md)
+
 ## Usage
 
 Map the VES P12 Password to ENV Var

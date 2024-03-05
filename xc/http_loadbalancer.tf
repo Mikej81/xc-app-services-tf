@@ -36,6 +36,8 @@ resource "volterra_http_loadbalancer" "app_proxy" {
   name      = "${var.name}-${random_pet.loadbalancer.id}-http-lb"
   namespace = var.namespace
 
+  depends_on = [volterra_app_firewall.example]
+
   advertise_on_public_default_vip = true
   disable_api_definition          = true
   no_challenge                    = true
@@ -55,10 +57,13 @@ resource "volterra_http_loadbalancer" "app_proxy" {
       tls_certificates {
         certificate_url = "string:///${base64encode(var.venafi_certificate)}"
         private_key {
-          clear_secret_info {
-            provider = ""
-            url      = "string:///${base64encode(var.venafi_private_key)}"
+          # clear_secret_info {
+          #   provider = ""
+          #   url      = "string:///${base64encode(var.venafi_private_key)}"
 
+          # }
+          blindfold_secret_info {
+            location = "string:///${var.blindfold_private_key}"
           }
         }
       }

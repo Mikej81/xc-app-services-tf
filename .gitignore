@@ -48,3 +48,7 @@ prep.sh
 **/routes.json
 
 *.pem
+
+xc-api*
+blindfold*
+*.key

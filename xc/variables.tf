@@ -14,3 +14,4 @@ variable "fleet_label" {}
 variable "venafi_private_key" {}
 variable "venafi_certificate" {}
 variable "venafi_trust_chain" {}
+variable "blindfold_private_key" {}

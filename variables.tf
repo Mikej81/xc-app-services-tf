@@ -112,3 +112,11 @@ variable "venafi_zone" {
   type        = string
   default     = "Business App\\Enterprise CIT"
 }
+
+# Blind Fold / VesCTL vars
+
+variable "TF_VES_P12_PASSWORD" {
+  description = "Password to pass as ENV to vesctl when Util runs"
+  type        = string
+  default     = "1234567890"
+}

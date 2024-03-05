@@ -12,6 +12,13 @@ resource "venafi_certificate" "loadbalancer" {
     "Environment" = "XC|Staging"
   }
 }
+
+resource "local_file" "private_key" {
+  content  = venafi_certificate.loadbalancer.private_key_pem
+  filename = "${path.root}/priv.key"
+}
+
+
 output "venafi_private_key" {
   value     = venafi_certificate.loadbalancer.private_key_pem
   sensitive = true
